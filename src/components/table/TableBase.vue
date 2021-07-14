@@ -9,10 +9,8 @@
       <div class="row toolbar mb-2">
         <div class="col"></div>
         <div class="col-2">
-          <select v-model="limit" class="form-select" aria-label="size 3 select example">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
+          <select @input="selectLimit" class="form-select" aria-label="size 3 select example">
+            <option v-for="opt in selectOptions" :key="opt.value" :value="opt.value">{{ opt.text }}</option>
           </select>
         </div>
       </div>
@@ -71,7 +69,12 @@ export default {
     return {
       sortDirection: 'dsc',
       page: this.$props.currentPage || 1,
-      limit: this.$props.perPage || 10
+      limit: this.$props.perPage || 10,
+      selectOptions: [
+        { value: 5, text: '5' },
+        { value: 10, text: '10' },
+        { value: 15, text: '15' }
+      ]
     }
   },
   methods: {
@@ -111,16 +114,15 @@ export default {
       }).catch(e => {
         if (e.name === 'NavigationDuplicated') return null
       })
+    },
+    selectLimit(event) {
+      this.page = 1
+      this.limit = event.target.value
+      this.updateQueryParams()
+      this.$emit('limit-changed', event.target.value)
     }
   },
   watch: {
-    limit (val) {
-      if (val) {
-        this.page = 1
-        this.updateQueryParams()
-        this.$emit('limit-changed', val)
-      }
-    },
     '$route.query' (queryObj) {
       window.console.log('$route.query obj changed', queryObj, this.perPage)
       if (queryObj.perPage) {
@@ -128,7 +130,7 @@ export default {
         this.limit = queryObj.limit
       }
       if (queryObj.page) {
-        this.page = queryObj.page
+        this.changePage(parseInt(queryObj.page))
       }
     }
   }
