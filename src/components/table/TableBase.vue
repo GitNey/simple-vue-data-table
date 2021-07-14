@@ -126,8 +126,8 @@ export default {
     '$route.query' (queryObj) {
       window.console.log('$route.query obj changed', queryObj, this.perPage)
       if (queryObj.perPage) {
-        this.changePage(queryObj.perPage)
-        this.limit = queryObj.limit
+        this.limit = queryObj.perPage
+        this.$emit('limit-changed', this.limit)
       }
       if (queryObj.page) {
         this.changePage(parseInt(queryObj.page))
