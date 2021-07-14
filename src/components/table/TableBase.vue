@@ -121,6 +121,7 @@ export default {
       if (val) {
         this.page = 1
         this.$emit('limit-changed', val)
+        this.updateQueryParams()
       }
     },
     '$route.query' (queryObj) {
