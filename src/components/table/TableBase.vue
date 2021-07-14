@@ -78,12 +78,17 @@ export default {
     changePage(n) {
       if (this.page >= 1 && n <= this.totalPages) {
         this.page = n
+        this.updateQueryParams()
         this.$emit('page-changed', n)
       }
     },
     sortItemsByProperty(property) {
+      // eslint-disable-next-line no-debugger
+      // debugger
       const items = [...this.items]
       const sortedItems = _.sortBy(items, property)
+      // window.console.log('items (clone)', items)
+      // window.console.log('sortedItems', sortedItems)
       // window.console.log(sortedItems, property)
       if (this.sortDirection === 'asc') {
         this.$emit('sort-items', sortedItems)
@@ -92,12 +97,39 @@ export default {
         this.$emit('sort-items', sortedItems.reverse())
         this.sortDirection = 'asc'
       }
+    },
+    updateQueryParams() {
+      const query = {}
+      if (this.limit) {
+        query['perPage'] = this.limit
+      }
+      if (this.page != 'undefined' && this.page > 0) {
+        query['page'] = this.page
+      }
+      this.$router.push({
+        query: { ...this.$route.query, ...query }
+      }).catch(e => {
+        if (e.name === 'NavigationDuplicated') return null
+      })
     }
   },
   watch: {
     limit (val) {
-      this.page = 1
-      this.$emit('limit-changed', val)
+      if (val) {
+        this.page = 1
+        this.updateQueryParams()
+        this.$emit('limit-changed', val)
+      }
+    },
+    '$route.query' (queryObj) {
+      window.console.log('$route.query obj changed', queryObj, this.perPage)
+      if (queryObj.perPage) {
+        this.changePage(queryObj.perPage)
+        this.limit = queryObj.limit
+      }
+      if (queryObj.page) {
+        this.page = queryObj.page
+      }
     }
   }
 }

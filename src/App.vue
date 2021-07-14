@@ -35,13 +35,14 @@ export default {
       items: [],
       fields: [
         { key: 'id', label: 'ID', sortable: true },
-        { key: 'first_name', label: 'Name' },
+        { key: 'first_name', label: 'Name', sortable: true },
         { key: 'year', label: 'Year', sortable: true },
         { key: 'color', label: 'Color' },
         { key: 'created_at', label: 'Created At' }
       ],
       totalPages: null,
-      resource: 'post',
+      resource: 'users',
+      perPage: 10,
       page: 1
     }
   },
@@ -70,7 +71,7 @@ export default {
     },
     limitChanged (limit) {
       this.page = 1
-      this.perPage = limit
+      this.perPage = parseInt(limit)
       this.refreshTable(this.resource, this.page, limit)
     }
   },
