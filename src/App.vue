@@ -71,7 +71,7 @@ export default {
     },
     limitChanged (limit) {
       this.page = 1
-      this.perPage = parseInt(limit)
+      this.perPage = limit
       this.refreshTable(this.resource, this.page, limit)
     }
   },
