@@ -1,37 +1,28 @@
 <template>
   <div class="container table-container">
-    <div class="row" v-if="name">
-      <div class="col">
-        <h3 class="text-capitalize">{{name}}</h3>
-      </div>
-    </div>
+    <table-header v-if="name" :name="name" />
     <div class="row">
-      <div class="row toolbar mb-2">
-        <div class="col"></div>
-        <div class="col-2">
-          <select v-model="limit" class="form-select" aria-label="size 3 select example">
-            <option v-for="opt in selectOptions" :key="opt.value" :value="opt.value">{{ opt.text }}</option>
-          </select>
-        </div>
-      </div>
+      <table-toolbar :limit="perPage" @toolbar-limit-changed="(newLimit) => limit = newLimit" />
       <div class="col">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th scope="col" v-for="field in fields" :key="field.key">
-                {{ field.label || field.key }}
-                <a v-if="field.sortable" class="p-1" style="cursor:pointer" @click.prevent="sortItemsByProperty(field.key)">
-                  <i class="fas fa-sort"></i>
-                </a>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in items" :key="item.id">
-              <td v-for="itemField in item" :key="itemField">{{ itemField }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col" v-for="field in fields" :key="field.key">
+                  {{ field.label || field.key }}
+                  <a v-if="field.sortable" class="p-1" style="cursor:pointer" @click.prevent="sortItemsByProperty(field.key)">
+                    <i class="fas fa-sort"></i>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in items" :key="item.id">
+                <td v-for="itemField in item" :key="itemField">{{ itemField }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -56,7 +47,10 @@
 
 <script>
 import _ from 'underscore'
+import TableHeader from './TableHeader.vue'
+import TableToolbar from './TableToolbar.vue'
 export default {
+  components: { TableHeader, TableToolbar },
   props: {
     name: String,
     items: Array,
@@ -81,18 +75,12 @@ export default {
     changePage(n) {
       if (this.page >= 1 && n <= this.totalPages) {
         this.page = n
-        this.updateQueryParams()
         this.$emit('page-changed', n)
       }
     },
     sortItemsByProperty(property) {
-      // eslint-disable-next-line no-debugger
-      // debugger
       const items = [...this.items]
       const sortedItems = _.sortBy(items, property)
-      // window.console.log('items (clone)', items)
-      // window.console.log('sortedItems', sortedItems)
-      // window.console.log(sortedItems, property)
       if (this.sortDirection === 'asc') {
         this.$emit('sort-items', sortedItems)
         this.sortDirection = 'dsc'
@@ -121,7 +109,6 @@ export default {
       if (val) {
         this.page = 1
         this.$emit('limit-changed', val)
-        this.updateQueryParams()
       }
     },
     '$route.query' (queryObj) {
