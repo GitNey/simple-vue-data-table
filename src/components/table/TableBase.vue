@@ -1,8 +1,10 @@
 <template>
   <div class="container table-container">
-    <table-header v-if="name" :name="name" />
     <div class="row">
-      <table-toolbar :limit="perPage" @toolbar-limit-changed="(newLimit) => limit = newLimit" />
+      <div id="table-toolbar" class="col-12 d-flex">
+        <table-header v-if="name" :name="name" />
+        <table-toolbar :limit="perPage" @toolbar-limit-changed="(newLimit) => limit = newLimit" />
+      </div>
       <div class="col">
         <div class="table-responsive">
           <table class="table table-bordered">

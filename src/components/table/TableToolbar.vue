@@ -1,11 +1,8 @@
 <template>
   <div class="row toolbar mb-2">
-    <div class="col"></div>
-    <div class="col-2 col-sm-3">
-      <select v-model="limit" class="form-select" aria-label="size 3 select example">
-        <option v-for="opt in selectOptions" :key="opt.value" :value="opt.value">{{ opt.text }}</option>
-      </select>
-    </div>
+    <select v-model="limit" class="form-select" aria-label="size 3 select example">
+      <option v-for="opt in selectOptions" :key="opt.value" :value="opt.value" :class="`per-page-${opt.value}`">{{ opt.text }}</option>
+    </select>
   </div>
 </template>
 
