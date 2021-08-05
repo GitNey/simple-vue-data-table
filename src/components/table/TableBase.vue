@@ -5,23 +5,31 @@
         <table-header v-if="name" :name="name" />
         <table-toolbar :limit="perPage" @toolbar-limit-changed="(newLimit) => limit = newLimit" />
       </div>
-      <div class="col">
+      <div class="col-12">
         <div class="table-responsive">
           <table class="table table-bordered">
             <thead>
               <tr>
                 <th scope="col" v-for="field in fields" :key="field.key">
-                  {{ field.label || field.key }}
-                  <a v-if="field.sortable" class="p-1" style="cursor:pointer" @click.prevent="sortItemsByProperty(field.key)">
-                    <i class="fas fa-sort"></i>
-                  </a>
+                  <div class="field-column d-flex justify-content-between align-items-center">
+                    <span class="field-label">{{ field.label || field.key }}</span>
+                    <a v-if="field.sortable" style="margin-left: 5px; cursor:pointer" @click.prevent="sortItemsByProperty(field.key)">
+                      <i class="fas fa-sort"></i>
+                    </a>
+                  </div>
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody v-if="!loading">
               <tr v-for="item in items" :key="item.id">
                 <td v-for="itemField in item" :key="itemField">{{ itemField }}</td>
               </tr>
+            </tbody>
+            <tbody v-else class="table-loading">
+              <div class="spinner-border" role="status" style="margin-right: 5px;">
+                <span class="sr-only">Loading...</span>
+              </div>
+              Loading...
             </tbody>
           </table>
         </div>
@@ -63,6 +71,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       sortDirection: 'dsc',
       page: this.$props.currentPage || 1,
       limit: this.$props.perPage || 10,
@@ -75,10 +84,15 @@ export default {
   },
   methods: {
     changePage(n) {
+      this.loading = true
       if (this.page >= 1 && n <= this.totalPages) {
         this.page = n
         this.$emit('page-changed', n)
       }
+      this.resetLoader()
+    },
+    resetLoader () {
+      setTimeout(() => this.loading = false, 1000)
     },
     sortItemsByProperty(property) {
       const items = [...this.items]
@@ -108,10 +122,16 @@ export default {
   },
   watch: {
     limit (val) {
+      this.loading = true
       if (val) {
         this.page = 1
         this.$emit('limit-changed', val)
       }
+      this.resetLoader()
+      this.updateQueryParams()
+    },
+    currentPage() {
+      this.updateQueryParams()
     },
     '$route.query' (queryObj) {
       window.console.log('$route.query obj changed', queryObj, this.perPage)
@@ -128,5 +148,21 @@ export default {
 </script>
 
 <style>
+
+table {
+  position: relative;
+  width: 100%;
+  min-height: 100px;
+}
+
+.table-loading {
+  position: absolute;
+  left: calc(50% - 107.28px);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
 
 </style>
