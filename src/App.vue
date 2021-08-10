@@ -75,7 +75,7 @@ export default {
       this.refreshTable(this.resource, this.page, limit)
     }
   },
-  async mounted () {
+  async created () {
     this.refreshTable(this.resource, this.page, this.perPage)
   }
 }

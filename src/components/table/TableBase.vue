@@ -21,7 +21,7 @@
               </tr>
             </thead>
             <tbody v-if="!loading">
-              <tr v-for="item in items" :key="item.id">
+              <tr v-for="item in items" :key="item.id" class="table-item-row">
                 <td v-for="itemField in item" :key="itemField">{{ itemField }}</td>
               </tr>
             </tbody>
@@ -132,16 +132,6 @@ export default {
     },
     currentPage() {
       this.updateQueryParams()
-    },
-    '$route.query' (queryObj) {
-      window.console.log('$route.query obj changed', queryObj, this.perPage)
-      if (queryObj.perPage) {
-        this.limit = parseInt(queryObj.perPage)
-        this.$emit('limit-changed', this.limit)
-      }
-      if (queryObj.page) {
-        this.changePage(parseInt(queryObj.page))
-      }
     }
   }
 }
@@ -149,11 +139,11 @@ export default {
 
 <style>
 
-table {
+/* table {
   position: relative;
   width: 100%;
   min-height: 100px;
-}
+} */
 
 .table-loading {
   position: absolute;

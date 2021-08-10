@@ -1,8 +1,13 @@
 <template>
   <div class="toolbar mb-2">
     <select v-model="limit" class="form-select" aria-label="size 3 select example">
-      <option v-for="opt in selectOptions" :key="opt.value" :value="opt.value" :class="`per-page-${opt.value}`">
-        {{ opt.text }}
+      <option
+        v-for="opt in selectOptions"
+        :key="opt.value"
+        :value="opt.value"
+        :data-selected="opt.value == limit"
+        :class="`per-page-${opt.value}`">
+        <span v-if="opt.value == limit">---</span> {{ opt.text }} <span v-if="opt.value == limit">---</span>  
       </option>
     </select>
   </div>
@@ -15,7 +20,7 @@ export default {
   },
   data () {
     return {
-      limit: 10,
+      limit: this.$props.perPage || 10,
       selectOptions: [
         { value: 5, text: '5' },
         { value: 10, text: '10' },
