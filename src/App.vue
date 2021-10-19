@@ -12,7 +12,11 @@
           @page-changed="pageChanged"
           @sort-items="sort"
           @limit-changed="limitChanged"
-        />
+        >
+          <template v-for="(_, idx) in items" :slot="`slot-${idx}-avatar`">
+            <img :src="items[idx].avatar" class="img img-resonsive rounded m-auto d-block" :key="idx" />
+          </template>
+        </Table>
       </div>
     </div>
     <!-- <img alt="Vue logo" src="./assets/logo.png">
@@ -35,10 +39,10 @@ export default {
       items: [],
       fields: [
         { key: 'id', label: 'ID', sortable: true },
-        { key: 'first_name', label: 'Name', sortable: true },
-        { key: 'year', label: 'Year', sortable: true },
-        { key: 'color', label: 'Color' },
-        { key: 'created_at', label: 'Created At' }
+        { key: 'first_name', label: 'First Name', sortable: true },
+        { key: 'last_name', label: 'Last Name' },
+        { key: 'email', label: 'Email', sortable: true },
+        { key: 'avatar', label: 'Profile Image' }
       ],
       totalPages: null,
       resource: 'users',

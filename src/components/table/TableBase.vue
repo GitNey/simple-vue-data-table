@@ -21,8 +21,12 @@
               </tr>
             </thead>
             <tbody v-if="!loading">
-              <tr v-for="item in items" :key="item.id" class="table-item-row">
-                <td v-for="itemField in item" :key="itemField">{{ itemField }}</td>
+              <tr v-for="(item, idx) in items" :key="item.id" class="table-item-row">
+                <td v-for="itemField in fields" :key="itemField">
+                  <slot :name="`slot-${idx}-${itemField.key}`">
+                    {{item[itemField.key]}}
+                  </slot>
+                </td>
               </tr>
             </tbody>
             <tbody v-else class="table-loading">
